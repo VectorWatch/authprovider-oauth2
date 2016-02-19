@@ -1,16 +1,28 @@
 {
   "name": "vectorwatch-authprovider-oauth2",
   "version": "1.0.0",
-  "description": "",
+  "description": "A VectorWatch AuthProvider that uses OAuth 2.0",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "alin.roman@zitec.com",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "bluebird": "^3.3.1",
     "oauth": "^0.9.14",
     "vectorwatch-authprovider-abstract": "^1.0.0"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VectorWatch/authprovider-oauth2.git"
+  },
+  "keywords": [
+    "vectorwatch"
+  ],
+  "bugs": {
+    "url": "https://github.com/VectorWatch/authprovider-oauth2/issues"
+  },
+  "homepage": "https://github.com/VectorWatch/authprovider-oauth2#readme"
 }
