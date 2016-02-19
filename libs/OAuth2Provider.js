@@ -30,10 +30,11 @@ function OAuth2Provider(storageProvider, options) {
         accessTokenPath
     );
 }
+util.inherits(OAuth2Provider, AuthProviderAbstract);
 
 OAuth2Provider.prototype.setOptions = function(options, required) {
     this.options = {};
-    var optionNames = Object.keys(options), _this;
+    var optionNames = Object.keys(options), _this = this;
     required.forEach(function(requiredOptionName) {
         if (optionNames.indexOf(requiredOptionName) < 0) {
             throw new Error('Option ' + requiredOptionName + ' is required.');
@@ -49,13 +50,17 @@ OAuth2Provider.prototype.getAuthTokensAsync = function(credentials) {
     var _this = this;
     var credentialsKey = this.getCredentialsKey(credentials);
 
+    if (!credentialsKey) {
+        return Promise.resolve();
+    }
+
     return this.getStorageProvider().getAuthTokensByCredentialsKeyAsync(credentialsKey).then(function(authTokens) {
         if (authTokens) {
             return authTokens;
         }
 
         return new Promise(function(resolve, reject) {
-            _this.client.getOAuthAccessToken(code, {
+            _this.client.getOAuthAccessToken(credentials.code, {
                 redirect_uri: _this.options.callbackUrl,
                 grant_type: _this.options.grantType || 'authorization_code'
             }, function(err, access_token, refresh_token) {
@@ -79,7 +84,7 @@ OAuth2Provider.prototype.getAuthTokensAsync = function(credentials) {
 };
 
 OAuth2Provider.prototype.getCredentialsKey = function(credentials) {
-    return credentials.state;
+    return (credentials || {}).state;
 };
 
 OAuth2Provider.prototype.getLoginUrlAsync = function() {
