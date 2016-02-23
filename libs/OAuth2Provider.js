@@ -4,6 +4,12 @@ var Promise = require('bluebird');
 var url = require('url');
 var OAuth2 = require('oauth').OAuth2;
 
+/**
+ * @param storageProvider {StorageProviderAbstract}
+ * @param options {Object}
+ * @constructor
+ * @augments AuthProviderAbstract
+ */
 function OAuth2Provider(storageProvider, options) {
     AuthProviderAbstract.call(this, storageProvider);
     this.setOptions(options, [
@@ -32,6 +38,11 @@ function OAuth2Provider(storageProvider, options) {
 }
 util.inherits(OAuth2Provider, AuthProviderAbstract);
 
+/**
+ * Sets the options and checks the required ones
+ * @param options {Object}
+ * @param required {String[]}
+ */
 OAuth2Provider.prototype.setOptions = function(options, required) {
     this.options = {};
     var optionNames = Object.keys(options), _this = this;
@@ -46,6 +57,9 @@ OAuth2Provider.prototype.setOptions = function(options, required) {
     });
 };
 
+/**
+ * @inheritdoc
+ */
 OAuth2Provider.prototype.getAuthTokensAsync = function(credentials) {
     var _this = this;
     var credentialsKey = this.getCredentialsKey(credentials);
@@ -83,10 +97,16 @@ OAuth2Provider.prototype.getAuthTokensAsync = function(credentials) {
     });
 };
 
+/**
+ * @inheritdoc
+ */
 OAuth2Provider.prototype.getCredentialsKey = function(credentials) {
     return (credentials || {}).state;
 };
 
+/**
+ * @inheritdoc
+ */
 OAuth2Provider.prototype.getLoginUrlAsync = function() {
     var hmac = require('crypto').createHmac('sha1', this.options.clientSecret);
     hmac.update(JSON.stringify([Date.now(), Math.random()]));

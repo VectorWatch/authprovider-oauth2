@@ -1,6 +1,6 @@
 {
   "name": "vectorwatch-authprovider-oauth2",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A VectorWatch AuthProvider that uses OAuth 2.0",
   "main": "index.js",
   "scripts": {
