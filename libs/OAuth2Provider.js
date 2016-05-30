@@ -13,15 +13,15 @@ var OAuth2 = require('oauth').OAuth2;
 function OAuth2Provider(storageProvider, options) {
     AuthProviderAbstract.call(this, storageProvider);
 
-    if (process.env.SERVICE_ID) {
-        this.options.callbackUrl = "https://apps.vectorwatch.com/" + process.env.SERVICE_ID + "/webhook"
-    }
-
     this.setOptions(options, [
         'clientId', 'clientSecret',
         'authorizeUrl', 'accessTokenUrl',
         'callbackUrl'
     ]);
+
+    if (process.env.SERVICE_ID && this.options.callbackUrl === undefined) {
+        this.options.callbackUrl = "https://apps.vectorwatch.com/" + process.env.SERVICE_ID + "/webhook"
+    }
 
     this.protocol = 'OAuth';
     this.version = '2.0';
