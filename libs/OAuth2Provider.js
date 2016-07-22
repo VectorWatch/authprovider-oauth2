@@ -78,27 +78,40 @@ OAuth2Provider.prototype.getAuthTokensAsync = function(credentials) {
             return authTokens;
         }
 
-        return new Promise(function(resolve, reject) {
-            _this.client.getOAuthAccessToken(credentials.code, {
-                redirect_uri: _this.options.callbackUrl,
-                grant_type: _this.options.grantType || 'authorization_code'
-            }, function(err, access_token, refresh_token) {
-                if (err) {
-                    return reject(err);
-                }
-
+        if (credentials.access_token) { //google+ 
+            return new Promise(function(resolve, reject) {
                 var authTokens = {
-                    access_token: access_token,
-                    refresh_token: refresh_token
+                    access_token: credentials.access_token
                 };
-
                 _this.getStorageProvider().storeAuthTokensAsync(credentialsKey, authTokens).then(function() {
                     resolve(authTokens);
                 }).catch(function (err) {
                     reject(err);
                 });
             });
-        });
+        } else {
+            return new Promise(function(resolve, reject) {
+                _this.client.getOAuthAccessToken(credentials.code, {
+                    redirect_uri: _this.options.callbackUrl,
+                    grant_type: _this.options.grantType || 'authorization_code'
+                }, function(err, access_token, refresh_token) {
+                    if (err) {
+                        return reject(err);
+                    }
+
+                    var authTokens = {
+                        access_token: access_token,
+                        refresh_token: refresh_token
+                    };
+
+                    _this.getStorageProvider().storeAuthTokensAsync(credentialsKey, authTokens).then(function() {
+                        resolve(authTokens);
+                    }).catch(function (err) {
+                        reject(err);
+                    });
+                });
+            });
+        }
     });
 };
 
