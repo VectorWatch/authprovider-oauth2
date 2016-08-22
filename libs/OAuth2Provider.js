@@ -38,7 +38,8 @@ function OAuth2Provider(storageProvider, options) {
         this.options.clientSecret,
         baseUrl,
         null,
-        accessTokenPath
+        accessTokenPath,
+        this.options.customHeaders
     );
 }
 util.inherits(OAuth2Provider, AuthProviderAbstract);
