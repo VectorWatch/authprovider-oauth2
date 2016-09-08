@@ -116,6 +116,43 @@ OAuth2Provider.prototype.getAuthTokensAsync = function(credentials) {
     });
 };
 
+
+OAuth2Provider.prototype.refreshAuthTokensAsync = function(credentialsKey) {
+    var _this = this;
+    if (!credentialsKey) {
+        reject("No refresh token found");
+    }
+    return this.getStorageProvider().getAuthTokensByCredentialsKeyAsync(credentialsKey).then(function(authTokens) {
+        if (!authTokens || !authTokens.refresh_token) {
+            reject("No refresh token found");
+        }
+
+        return new Promise(function(resolve, reject) {
+            var current_refresh_token = authTokens.refresh_token;
+            _this.client.getOAuthAccessToken(authTokens.refresh_token, {
+                redirect_uri: _this.options.callbackUrl,
+                grant_type: _this.options.grantType || 'refresh_token'
+            }, function(err, access_token, refresh_token) {
+                if (err) {
+                    return reject(err);
+                }
+
+                var authTokens = {
+                    access_token: access_token,
+                    refresh_token: refresh_token ? refresh_token : current_refresh_token
+                };
+
+                _this.getStorageProvider().storeAuthTokensAsync(credentialsKey, authTokens).then(function() {
+                    resolve(authTokens);
+                }).catch(function (err) {
+                    reject(err);
+                });
+            });
+        });
+
+    });
+};
+
 /**
  * @inheritdoc
  */
